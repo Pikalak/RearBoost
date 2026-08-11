@@ -25,20 +25,18 @@ jobs:
         run: |
           cmake --build build --config Release
 
-      - name: Find plugin
+      - name: Find RearBoost
         shell: pwsh
         run: |
-          Get-ChildItem -Path build -Recurse -Include *.vst3
+          Get-ChildItem -Path build -Recurse -Filter "RearBoost.vst3"
 
-      - name: Package plugin
+      - name: Package RearBoost
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path artifact
-          Get-ChildItem -Path build -Recurse -Filter "*.vst3" |
-            Copy-Item -Destination artifact -Recurse -Force
-          Get-ChildItem -Path artifact -Recurse
+          Copy-Item "build\VST3\Release\RearBoost.vst3" "artifact\RearBoost.vst3" -Recurse -Force
 
-      - name: Upload plugin
+      - name: Upload RearBoost
         uses: actions/upload-artifact@v4
         with:
           name: RearBoost-VST3
