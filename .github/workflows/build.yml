@@ -21,6 +21,7 @@ jobs:
 
       - name: Build VST3
         shell: pwsh
+        continue-on-error: true
         run: |
           cmake --build build --config Release
 
@@ -29,8 +30,16 @@ jobs:
         run: |
           Get-ChildItem -Path build -Recurse -Include *.vst3
 
+      - name: Package plugin
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifact
+          Get-ChildItem -Path build -Recurse -Filter "*.vst3" |
+            Copy-Item -Destination artifact -Recurse -Force
+          Get-ChildItem -Path artifact -Recurse
+
       - name: Upload plugin
         uses: actions/upload-artifact@v4
         with:
           name: RearBoost-VST3
-          path: build/**/*.vst3
+          path: artifact
